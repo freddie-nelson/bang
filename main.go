@@ -7,50 +7,67 @@ import (
 	"strings"
 )
 
-const charHeight int = 6
-const charactersFile string = "3dcharacters.txt"
-
 func main() {
-
 	if len(os.Args) < 2 {
 		fmt.Println(fmt.Errorf("%sError: please enter a string to bannerified%s", Red, Reset))
 		return
-	} else if len(os.Args) > 2 {
+	} else if len(os.Args) > 3 {
 		fmt.Println(fmt.Errorf("%sError: too many arguments%s", Red, Reset))
 		return
 	}
 
-	message := os.Args[1]
+	var (
+		message        string
+		charHeight     int
+		charactersFile string
+	)
+
+	if os.Args[1] == "--3d" {
+		message = os.Args[2]
+		charHeight = 6
+		charactersFile = "3dcharacters.txt"
+
+	} else {
+		message = os.Args[1]
+		charHeight = 5
+		charactersFile = "characters.txt"
+	}
+
+	DisplayBanner(message, charHeight, charactersFile)
+}
+
+// DisplayBanner : displays a large ASCII text banner of the given message in a rainbow color
+func DisplayBanner(message string, charHeight int, charactersFile string) {
 	messageLength := len(message)
 
-	var lines [charHeight][]string
-
+	lines := make([][]string, charHeight)
 	for i := 0; i < charHeight; i++ {
 		lines[i] = make([]string, 0, messageLength)
 	}
 
-	createRows(&lines, message)
-	printRows(lines, messageLength)
+	lines = createRows(lines, message, charHeight, charactersFile)
+	printRows(lines, messageLength, charHeight)
 	fmt.Println(Reset)
 }
 
-func createRows(rows *[charHeight][]string, message string) {
-	for _, v := range strings.ToUpper(message) {
-		letter := getLetter(v)
+func createRows(rows [][]string, message string, charHeight int, charactersFile string) [][]string {
+	for _, char := range strings.ToUpper(message) {
+		letter := getLetter(char, charHeight, charactersFile)
 		if letter == nil {
-			return
+			return nil
 		}
 
 		for i := 0; i < charHeight; i++ {
 			rows[i] = append(rows[i], letter[i])
 		}
 	}
+
+	return rows
 }
 
-func printRows(rows [charHeight][]string, messageLength int) {
+func printRows(rows [][]string, messageLength int, charHeight int) {
 	rainbow := [12]string{Red, Orange, Yellow, GreenYellow, Green, GreenCyan, Cyan, LightBlue, Blue, Purple, Pink, PinkRed}
-	var lines [charHeight]string
-
+	lines := make([]string, charHeight)
 	column := 0
 	lastCol := 0
 
@@ -64,7 +81,7 @@ func printRows(rows [charHeight][]string, messageLength int) {
 				column++
 			}
 
-			lines[j] = fmt.Sprintf("%s %s", lines[j], strings.TrimRight(s, "\r"))
+			lines[j] = fmt.Sprintf("%s %s", lines[j], strings.TrimRight(s, "\r\n"))
 		}
 
 		lastCol = column
@@ -73,7 +90,7 @@ func printRows(rows [charHeight][]string, messageLength int) {
 	fmt.Println("\n" + strings.Join(lines[:], "\n"))
 }
 
-func getLetter(letter rune) []string {
+func getLetter(letter rune, charHeight int, charactersFile string) []string {
 	data, err := ioutil.ReadFile(charactersFile)
 	if err != nil {
 		fmt.Println("Error while reading characters file", err)
@@ -84,7 +101,7 @@ func getLetter(letter rune) []string {
 	lineNumber := int(letter-65) * charHeight
 
 	if lineNumber < 0 {
-		var space [charHeight]string
+		space := make([]string, charHeight)
 		for i := range space {
 			space[i] = "      "
 		}
