@@ -3,9 +3,7 @@
 ## Table of Contents 📰
 
 * [Installation](#installation)
-* [Getting Started](#getting-started)
-  * [Import Component](#import-component)
-  * [How to use](#how-to-use)
+* [How to use](#getting-started)
 * [License](#license)
 * [Contact](#contact)
 
