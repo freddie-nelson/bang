@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -19,25 +18,25 @@ func main() {
 	var (
 		message        string
 		charHeight     int
-		charactersFile string
+		isCharacters3D bool
 	)
 
-	if os.Args[1] == "--3d" {
+	if strings.ToUpper(os.Args[1]) == "--2D" {
 		message = os.Args[2]
-		charHeight = 6
-		charactersFile = "3dcharacters.txt"
+		charHeight = 5
+		isCharacters3D = false
 
 	} else {
 		message = os.Args[1]
-		charHeight = 5
-		charactersFile = "characters.txt"
+		charHeight = 6
+		isCharacters3D = true
 	}
 
-	DisplayBanner(message, charHeight, charactersFile)
+	DisplayBanner(message, charHeight, isCharacters3D)
 }
 
 // DisplayBanner : displays a large ASCII text banner of the given message in a rainbow color
-func DisplayBanner(message string, charHeight int, charactersFile string) {
+func DisplayBanner(message string, charHeight int, isCharacters3D bool) {
 	messageLength := len(message)
 
 	lines := make([][]string, charHeight)
@@ -45,14 +44,14 @@ func DisplayBanner(message string, charHeight int, charactersFile string) {
 		lines[i] = make([]string, 0, messageLength)
 	}
 
-	lines = createRows(lines, message, charHeight, charactersFile)
+	lines = createRows(lines, message, charHeight, isCharacters3D)
 	printRows(lines, messageLength, charHeight)
 	fmt.Println(Reset)
 }
 
-func createRows(rows [][]string, message string, charHeight int, charactersFile string) [][]string {
+func createRows(rows [][]string, message string, charHeight int, isCharacters3D bool) [][]string {
 	for _, char := range strings.ToUpper(message) {
-		letter := getLetter(char, charHeight, charactersFile)
+		letter := getLetter(char, charHeight, isCharacters3D)
 		if letter == nil {
 			return nil
 		}
@@ -90,14 +89,14 @@ func printRows(rows [][]string, messageLength int, charHeight int) {
 	fmt.Println("\n" + strings.Join(lines[:], "\n"))
 }
 
-func getLetter(letter rune, charHeight int, charactersFile string) []string {
-	data, err := ioutil.ReadFile(charactersFile)
-	if err != nil {
-		fmt.Println("Error while reading characters file", err)
-		return nil
+func getLetter(letter rune, charHeight int, isCharacters3D bool) []string {
+	var lines []string
+	if isCharacters3D {
+		lines = strings.Split(Characters3D, "\n")
+	} else {
+		lines = strings.Split(Characters2D, "\n")
 	}
 
-	lines := strings.Split(string(data), "\n")
 	lineNumber := int(letter-65) * charHeight
 
 	if lineNumber < 0 {
