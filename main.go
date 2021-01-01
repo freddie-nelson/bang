@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+const charHeight int = 6
+const charactersFile string = "3dcharacters.txt"
+
 func main() {
 
 	if len(os.Args) < 2 {
@@ -20,42 +23,38 @@ func main() {
 	message := os.Args[1]
 	messageLength := len(message)
 
-	var lines [5][]string
+	var lines [charHeight][]string
 
-	lines[0] = make([]string, 0, messageLength)
-	lines[1] = make([]string, 0, messageLength)
-	lines[2] = make([]string, 0, messageLength)
-	lines[3] = make([]string, 0, messageLength)
-	lines[4] = make([]string, 0, messageLength)
+	for i := 0; i < charHeight; i++ {
+		lines[i] = make([]string, 0, messageLength)
+	}
 
 	createRows(&lines, message)
 	printRows(lines, messageLength)
 	fmt.Println(Reset)
 }
 
-func createRows(rows *[5][]string, message string) {
+func createRows(rows *[charHeight][]string, message string) {
 	for _, v := range strings.ToUpper(message) {
 		letter := getLetter(v)
 		if letter == nil {
 			return
 		}
 
-		rows[0] = append(rows[0], letter[0])
-		rows[1] = append(rows[1], letter[1])
-		rows[2] = append(rows[2], letter[2])
-		rows[3] = append(rows[3], letter[3])
-		rows[4] = append(rows[4], letter[4])
+		for i := 0; i < charHeight; i++ {
+			rows[i] = append(rows[i], letter[i])
+		}
 	}
 }
 
-func printRows(rows [5][]string, messageLength int) {
+func printRows(rows [charHeight][]string, messageLength int) {
 	rainbow := [12]string{Red, Orange, Yellow, GreenYellow, Green, GreenCyan, Cyan, LightBlue, Blue, Purple, Pink, PinkRed}
-	var lines [5]string
+	var lines [charHeight]string
 
 	column := 0
 
 	for i := 0; i < messageLength; i++ {
-		for j := 0; j < len(lines); j++ {
+		for j := 0; j < charHeight; j++ {
 			var s string
 
 			for _, char := range rows[j][i] {
@@ -71,30 +70,29 @@ func printRows(rows [5][]string, messageLength int) {
 		}
 	}
 
-	fmt.Println(strings.Join(lines[:], "\n"))
+	fmt.Println("\n" + strings.Join(lines[:], "\n"))
 }
 
 func getLetter(letter rune) []string {
-	data, err := ioutil.ReadFile("characters.txt")
+	data, err := ioutil.ReadFile(charactersFile)
 	if err != nil {
-		fmt.Println("Error while reading characters.txt", err)
+		fmt.Println("Error while reading characters file", err)
 		return nil
 	}
 
 	lines := strings.Split(string(data), "\n")
-	lineNumber := int(letter-65) * 5
+	lineNumber := int(letter-65) * charHeight
 
 	if lineNumber < 0 {
-		return []string{
-			"      ",
-			"      ",
-			"      ",
-			"      ",
-			"      ",
+		var space [charHeight]string
+		for i := range space {
+			space[i] = "      "
 		}
+
+		return space[:]
 	}
 
-	var character []string = lines[lineNumber : lineNumber+5]
+	var character []string = lines[lineNumber : lineNumber+charHeight]
 
 	return character
 }
