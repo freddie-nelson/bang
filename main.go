@@ -52,22 +52,22 @@ func printRows(rows [charHeight][]string, messageLength int) {
 	var lines [charHeight]string
 
 	column := 0
+	lastCol := 0
 
 	for i := 0; i < messageLength; i++ {
 		for j := 0; j < charHeight; j++ {
+			column = lastCol
 			var s string
 
 			for _, char := range rows[j][i] {
-				s = s + rainbow[column/2%len(rainbow)] + string(char)
+				s = s + rainbow[column%len(rainbow)] + string(char)
 				column++
 			}
 
 			lines[j] = fmt.Sprintf("%s %s", lines[j], strings.TrimRight(s, "\r"))
-
-			if j != len(lines)-1 {
-				column = 0 + i*len(rows[j][i])
-			}
 		}
+
+		lastCol = column
 	}
 
 	fmt.Println("\n" + strings.Join(lines[:], "\n"))
