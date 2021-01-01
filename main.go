@@ -3,11 +3,21 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
 func main() {
-	message := "happy new year"
+
+	if len(os.Args) < 2 {
+		fmt.Println(fmt.Errorf("%sError: please enter a string to bannerified%s", Red, Reset))
+		return
+	} else if len(os.Args) > 2 {
+		fmt.Println(fmt.Errorf("%sError: too many arguments%s", Red, Reset))
+		return
+	}
+
+	message := os.Args[1]
 	messageLength := len(message)
 
 	var lines [5][]string
