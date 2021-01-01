@@ -7,9 +7,7 @@ import (
 )
 
 func main() {
-	// PrintBlocks("hello world")
-
-	message := "helloworld"
+	message := "happy new year"
 	messageLength := len(message)
 
 	var lines [5][]string
@@ -75,6 +73,17 @@ func getLetter(letter rune) []string {
 
 	lines := strings.Split(string(data), "\n")
 	lineNumber := int(letter-65) * 5
+
+	if lineNumber < 0 {
+		return []string{
+			"      ",
+			"      ",
+			"      ",
+			"      ",
+			"      ",
+		}
+	}
+
 	var character []string = lines[lineNumber : lineNumber+5]
 
 	return character
