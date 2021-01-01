@@ -51,15 +51,11 @@ func printRows(rows [5][]string, messageLength int) {
 			var s string
 
 			for _, char := range rows[j][i] {
-				if column == 0 {
-					s = s + rainbow[0] + string(char)
-				} else {
-					s = s + rainbow[column%len(rainbow)] + string(char)
-				}
+				s = s + rainbow[column/2%len(rainbow)] + string(char)
 				column++
 			}
 
-			lines[j] = fmt.Sprintf("%s%s", lines[j], strings.TrimRight(s, "\r"))
+			lines[j] = fmt.Sprintf("%s %s", lines[j], strings.TrimRight(s, "\r"))
 
 			if j != len(lines)-1 {
 				column = 0 + i*len(rows[j][i])
