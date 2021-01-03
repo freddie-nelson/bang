@@ -9,17 +9,17 @@
 
 ## Installation 🔥
 ```bash
-// using go cli
+# using go cli
 go install github.com/freddie-nelson/bang
 ```
 
 ## How to use 👍
 
 ```bash
-// 3D text
+# 3D text
 bang "your text here"
 
-// 2D text
+# 2D text
 bang --2d "your text here"
 ```
 
