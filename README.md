@@ -10,6 +10,7 @@
 ## Installation 🔥
 ```bash
 # using go cli
+go get github.com/freddie-nelson/bang
 go install github.com/freddie-nelson/bang
 ```
 
